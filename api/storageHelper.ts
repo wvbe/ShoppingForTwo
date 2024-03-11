@@ -85,6 +85,18 @@ class StorageTable<ItemShape extends { id: string }> {
 		await this.#sync();
 	}
 
+	public async update(id: string, update: Partial<ItemShape>): Promise<void> {
+		if (this.#items === null) {
+			throw new Error('StorageTable not initialized');
+		}
+		const index = this.#items.findIndex((item) => item.id === id);
+		if (index === -1) {
+			throw new Error(`Item with id ${id} not found`);
+		}
+		this.#items[index] = { ...this.#items[index], ...update };
+		await this.#sync();
+	}
+
 	/**
 	 * Generates a new key for the storage table that you could use for a new object that goes into it.
 	 * @returns A randomly generated key.
@@ -115,15 +127,20 @@ class StorageTable<ItemShape extends { id: string }> {
  * Helper class for managing storage of shopping items and shops.
  */
 class StorageHelper {
-	public readonly items = new StorageTable<ShoppingListItem>('@ShoppingForTwo:items');
-	public readonly shops = new StorageTable<ShoppingListShop>('@ShoppingForTwo:shops');
+	public readonly items = new StorageTable<ShoppingListItem>('@ShoppingForTwo:v2:items');
+	public readonly shops = new StorageTable<ShoppingListShop>('@ShoppingForTwo:v2:shops');
 
+	#initialized = false;
 	/**
 	 * Initializes the storage helper by initializing all storage tables within it.
 	 */
-	public async init() {
+	public async init(): Promise<void> {
+		if (this.#initialized) {
+			return;
+		}
 		await this.items.init();
 		await this.shops.init();
+		this.#initialized = true;
 	}
 }
 

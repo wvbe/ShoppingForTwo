@@ -1,68 +1,100 @@
-import { FC, useEffect, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FC, useMemo } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 
-import { storageHelper } from '../../api/storageHelper';
 import { ShoppingListItem } from '../../types';
+import { FancyText } from '../atoms/FancyText';
+import { useShoppingListItemStorage } from '../hooks/useStorageHelper';
 import { AddItemButton } from './AddItemButton';
 import { ListItem } from './ListItem';
 
 const styles = StyleSheet.create({
-	list: {
-		flexGrow: 0,
+	scrollContainer: {
+		flexGrow: 1,
 		flexShrink: 1,
-		alignItems: 'flex-start',
+		alignItems: 'center',
 		justifyContent: 'flex-start',
 		paddingVertical: 10,
 	},
+	list: {
+		flexDirection: 'column',
+		alignItems: 'center',
+	},
+	secondList: {
+		borderTopColor: '#ccc',
+		borderTopWidth: 1,
+		marginTop: 10,
+		paddingTop: 10,
+	},
 	stateMessage: {
-		flex: 0,
-		backgroundColor: '#fff',
+		flexGrow: 1,
+		flexShrink: 1,
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
 });
 
-function useShoppingListItemStorage() {
-	const [isLoading, setIsLoading] = useState(true);
-	const [items, setItems] = useState<ShoppingListItem[]>(storageHelper.items.slice());
-	useEffect(() => {
-		setIsLoading(true);
-		storageHelper.init().then(() => {
-			// I want to see the loading state better, so adding a timeout here 💯
-			setTimeout(() => {
-				setItems(storageHelper.items.slice());
-				setIsLoading(false);
-			}, 1000);
-		});
-
-		return storageHelper.items.subscribe(() => {
-			setItems(storageHelper.items.slice());
-		});
-	}, []);
-	return { isLoading, items };
-}
-
-export const List: FC = () => {
+/**
+ * Renders a list of shopping items.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered list component.
+ */
+export const List: FC<{
+	/**
+	 * Indicates whether the list is in editing mode, meaning additional buttons are shown to remove things.
+	 */
+	isEditing: boolean;
+}> = ({ isEditing }) => {
 	const { isLoading, items } = useShoppingListItemStorage();
 
 	const body = useMemo(() => {
 		if (isLoading) {
 			return (
 				<View style={styles.stateMessage}>
-					<Text>Loading the thing!</Text>
+					<FancyText>Hang tight, fam…</FancyText>
+					<ActivityIndicator size="small" style={{ marginTop: 20 }} />
 				</View>
 			);
 		}
 		if (!items.length) {
 			return (
 				<View style={styles.stateMessage}>
-					<Text>No shopping items yet!</Text>
-					<AddItemButton />
+					<FancyText>No shopping items yet!</FancyText>
+					<AddItemButton title="Add gogogo" style={{ marginTop: 20 }} />
 				</View>
 			);
 		}
-		return items.map((item, index) => <ListItem key={item.id} item={item} />);
-	}, [isLoading, items]);
 
-	return <ScrollView contentContainerStyle={styles.list}>{body}</ScrollView>;
+		const [complete, notComplete] = items.reduce<[ShoppingListItem[], ShoppingListItem[]]>(
+			([complete, notComplete], item) => {
+				if (item.completed) {
+					complete.push(item);
+				} else {
+					notComplete.push(item);
+				}
+				return [complete, notComplete];
+			},
+			[[], []],
+		);
+		return (
+			<>
+				{notComplete.length ? (
+					<View style={styles.list}>
+						{notComplete.map((item, index) => (
+							<ListItem key={item.id} item={item} isEditing={isEditing} />
+						))}
+					</View>
+				) : null}
+				{complete.length ? (
+					<View style={[styles.list, notComplete.length ? styles.secondList : null]}>
+						{complete.map((item, index) => (
+							<ListItem key={item.id} item={item} isEditing={isEditing} />
+						))}
+					</View>
+				) : null}
+			</>
+		);
+	}, [isLoading, isEditing, items]);
+
+	return <ScrollView contentContainerStyle={styles.scrollContainer}>{body}</ScrollView>;
 };

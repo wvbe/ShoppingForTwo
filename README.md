@@ -14,3 +14,4 @@ Shortcuts and technical debt
 - Adding a wishlist item would probably be easier if you didn't have to leave the list.
   If you are looking at a list filtered for one or more particular shops there may be some edge
   cases that a very simple form cannot handle. Nevertheles, with more time this should be implemented
+- I didn't bother to find a font for Android.

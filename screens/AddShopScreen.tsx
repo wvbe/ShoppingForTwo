@@ -1,10 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FC, useCallback, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { storageHelper } from '../api/storageHelper';
 import { FancyButton } from '../components/atoms/FancyButton';
+import { FancyText } from '../components/atoms/FancyText';
 import { FancyTextInput } from '../components/atoms/FancyTextInput';
 import { ScreenParams } from '../types';
 
@@ -32,7 +33,7 @@ export const AddShopScreen: FC<NativeStackScreenProps<ScreenParams, 'AddShop'>> 
 
 	return (
 		<View style={styles.container}>
-			<Text>Shop name:</Text>
+			<FancyText>Shop name:</FancyText>
 			<FancyTextInput value={shopName} onChangeText={setShopName} />
 			<FancyButton title="Add shop" onPress={onSubmit} isDisabled={!shopName.length} />
 		</View>

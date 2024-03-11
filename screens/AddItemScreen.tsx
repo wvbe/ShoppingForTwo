@@ -1,10 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FC, useCallback, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { storageHelper } from '../api/storageHelper';
 import { FancyButton } from '../components/atoms/FancyButton';
+import { FancyText } from '../components/atoms/FancyText';
 import { FancyTextInput } from '../components/atoms/FancyTextInput';
 import { ScreenParams } from '../types';
 
@@ -35,7 +36,7 @@ export const AddItemScreen: FC<NativeStackScreenProps<ScreenParams, 'AddItem'>> 
 	return (
 		<View style={styles.container}>
 			<View>
-				<Text>Whaddayaneed?</Text>
+				<FancyText>Whaddayaneed?</FancyText>
 				<FancyTextInput
 					autoFocus
 					value={itemLabel}

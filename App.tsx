@@ -12,7 +12,11 @@ export default function App() {
 	return (
 		<NavigationContainer>
 			<Stack.Navigator>
-				<Stack.Screen name="Home" component={HomeScreen} />
+				<Stack.Screen
+					name="Home"
+					component={HomeScreen}
+					options={{ title: `Bring when you can…` }}
+				/>
 				<Stack.Screen
 					name="AddShop"
 					component={AddShopScreen}
