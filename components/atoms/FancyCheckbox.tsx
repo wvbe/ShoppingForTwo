@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, ReactNode, useMemo } from 'react';
 import { GestureResponderEvent, Pressable, StyleSheet, View } from 'react-native';
 
 import { FancyText } from './FancyText';
@@ -10,6 +10,12 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 20,
 		paddingVertical: 10,
 		alignItems: 'center',
+	},
+	innerDot: {
+		width: 16,
+		height: 16,
+		backgroundColor: '#5072EB',
+		borderRadius: 8,
 	},
 	label: {
 		marginLeft: 20,
@@ -27,23 +33,27 @@ const styles = StyleSheet.create({
 
 export const FancyCheckbox: FC<{
 	isChecked: boolean;
-	label?: string;
+	label?: string | ReactNode;
 	onPress: (event: GestureResponderEvent) => void;
 }> = ({ isChecked, label, onPress }) => {
 	const buttonStyle = useMemo(
 		() => [
 			styles.button,
 			{
-				borderColor: isChecked ? '#506266' : '#818274',
-				backgroundColor: isChecked ? '#BDE038' : '#fff',
+				borderColor: isChecked ? '#5072EB' : '#aaa',
+				marginRight: label ? 20 : undefined,
 			},
 		],
-		[isChecked],
+		[isChecked, label],
 	);
 	return (
 		<Pressable style={styles.container} onPress={onPress} hitSlop={0}>
-			<View style={buttonStyle}>{isChecked && <FancyText>✔</FancyText>}</View>
-			{label && <FancyText style={styles.label}>{label}</FancyText>}
+			<View style={buttonStyle}>{isChecked && <View style={styles.innerDot} />}</View>
+			{typeof label === 'string' ? (
+				<FancyText style={styles.label}>{label}</FancyText>
+			) : (
+				label || null
+			)}
 		</Pressable>
 	);
 };

@@ -21,35 +21,41 @@ const styles = StyleSheet.create({
 export const AddItemScreen: FC<NativeStackScreenProps<ScreenParams, 'AddItem'>> = () => {
 	const navigation = useNavigation();
 
-	const [itemLabel, setItemLabel] = useState('');
+	const [label, setLabel] = useState<string>('');
+	const [quantity, setQuantity] = useState<string>('');
 
 	const onSubmit = useCallback(async () => {
 		await storageHelper.items.add({
 			id: storageHelper.items.generateNewKey(),
-			label: itemLabel,
-			quantity: 1,
+			label,
+			quantity: quantity || undefined,
 			completed: false,
 		});
 		navigation.navigate('Home');
-	}, [itemLabel, navigation]);
+	}, [label, quantity, navigation]);
 
 	return (
 		<View style={styles.container}>
 			<View>
-				<FancyText>Whaddayaneed?</FancyText>
+				<FancyText>What's the craving?</FancyText>
 				<FancyTextInput
 					autoFocus
-					value={itemLabel}
+					value={label}
 					placeholder="Something to describe this item"
-					onChangeText={setItemLabel}
+					onChangeText={setLabel}
 				/>
 			</View>
 			<View style={{ marginTop: 20 }}>
-				<FancyButton
-					title="Add to shopping list!"
-					onPress={onSubmit}
-					isDisabled={!itemLabel.length}
+				<FancyText>How many of 'em?</FancyText>
+				<FancyTextInput
+					keyboardType="number-pad"
+					value={quantity}
+					placeholder="Any number will do"
+					onChangeText={setQuantity}
 				/>
+			</View>
+			<View style={{ marginTop: 20 }}>
+				<FancyButton title="OK gov'ner" onPress={onSubmit} isDisabled={!label.length} />
 			</View>
 		</View>
 	);

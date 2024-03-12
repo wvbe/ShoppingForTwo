@@ -76,6 +76,7 @@ export const List: FC<{
 			},
 			[[], []],
 		);
+
 		return (
 			<>
 				{notComplete.length ? (

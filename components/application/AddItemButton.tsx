@@ -12,5 +12,5 @@ export const AddItemButton: FC<{ title?: string; style?: StyleProp<ViewStyle> }>
 	const onPress = useCallback(() => {
 		navigation.navigate('AddItem');
 	}, []);
-	return <FancyButton onPress={onPress} title={title || 'Add an item yeh bruv?'} style={style} />;
+	return <FancyButton onPress={onPress} title={title || 'Add item bruv'} style={style} />;
 };

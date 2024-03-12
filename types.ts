@@ -13,7 +13,10 @@ export type ScreenParams = {
 export type ShoppingListItem = {
 	id: string;
 	label: string;
-	quantity: number;
+	/**
+	 * The amount of it. For example, "3" bananas or "1L" of rum.
+	 */
+	quantity?: string;
 	completed: boolean;
 	shops?: string[];
 };

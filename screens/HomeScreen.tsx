@@ -27,8 +27,13 @@ export const HomeScreen: FC<NativeStackScreenProps<ScreenParams, 'Home'>> = ({ n
 		<View style={styles.container}>
 			<List isEditing={isEditing} />
 			<View style={styles.buttonWrapper}>
-				<AddItemButton style={{ flexGrow: 1 }} />
-				<FancyButton title={'❌'} onPress={toggleEditing} style={{ marginLeft: 20 }} type="muted" />
+				<AddItemButton style={{ flexGrow: isEditing ? 0 : 1 }} />
+				<FancyButton
+					title={'❌'}
+					onPress={toggleEditing}
+					style={{ marginLeft: 20, flexGrow: isEditing ? 1 : 0 }}
+					type="muted"
+				/>
 			</View>
 		</View>
 	);
